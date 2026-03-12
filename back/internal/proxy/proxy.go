@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"meo/internal/events"
 	"meo/internal/storage"
 )
 
@@ -16,13 +17,15 @@ type Proxy struct {
 	target *url.URL
 	store  storage.Store
 	client *http.Client
+	hub    *events.Hub
 }
 
-func New(target *url.URL, store storage.Store) *Proxy {
+func New(target *url.URL, store storage.Store, hub *events.Hub) *Proxy {
 	return &Proxy{
 		target: target,
 		store:  store,
 		client: &http.Client{},
+		hub:    hub,
 	}
 }
 
@@ -88,6 +91,9 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 	}
 	_ = p.store.SaveExchange(exchange)
+	if p.hub != nil {
+		p.hub.Publish(exchange)
+	}
 }
 
 func (p *Proxy) buildTargetURL(r *http.Request) string {

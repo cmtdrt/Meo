@@ -5,23 +5,26 @@ import (
 	"net/http"
 	"strings"
 
-	"meo/internal/storage"
+	"meo/internal/events"
 	"meo/internal/proxy"
+	"meo/internal/storage"
 )
 
 type Server struct {
 	store storage.Store
 	p     *proxy.Proxy
+	hub   *events.Hub
 }
 
-func New(store storage.Store, p *proxy.Proxy) *Server {
-	return &Server{store: store, p: p}
+func New(store storage.Store, p *proxy.Proxy, hub *events.Hub) *Server {
+	return &Server{store: store, p: p, hub: hub}
 }
 
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/exchanges", s.handleListExchanges)
 	mux.HandleFunc("/exchanges/", s.handleExchange)
+	mux.HandleFunc("/events", s.handleEvents)
 	return mux
 }
 
@@ -96,6 +99,39 @@ func (s *Server) replayExchange(w http.ResponseWriter, r *http.Request, id strin
 	}
 
 	s.p.ServeHTTP(w, req)
+}
+
+func (s *Server) handleEvents(w http.ResponseWriter, r *http.Request) {
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, "streaming unsupported", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+
+	sub := s.hub.Subscribe()
+	defer s.hub.Unsubscribe(sub)
+
+	notify := r.Context().Done()
+
+	for {
+		select {
+		case <-notify:
+			return
+		case e := <-sub:
+			data, err := json.Marshal(e)
+			if err != nil {
+				continue
+			}
+			_, _ = w.Write([]byte("data: "))
+			_, _ = w.Write(data)
+			_, _ = w.Write([]byte("\n\n"))
+			flusher.Flush()
+		}
+	}
 }
 
 func writeJSON(w http.ResponseWriter, v any) {

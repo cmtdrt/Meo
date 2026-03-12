@@ -8,6 +8,7 @@ import (
 
 	"meo/internal/api"
 	"meo/internal/config"
+	"meo/internal/events"
 	"meo/internal/proxy"
 	"meo/internal/storage/sqlite"
 )
@@ -50,8 +51,10 @@ func main() {
 	}
 	defer store.Close()
 
-	p := proxy.New(u, store)
-	apiServer := api.New(store, p)
+	hub := events.NewHub()
+
+	p := proxy.New(u, store, hub)
+	apiServer := api.New(store, p, hub)
 
 	go func() {
 		log.Printf("proxy listening on %s", cfg.ProxyAddr)
