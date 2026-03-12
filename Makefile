@@ -1,2 +1,2 @@
 run-b:
-	go run back/main.go
+	cd back && go run ./cmd/meo
