@@ -7,14 +7,14 @@ type Request struct {
 	Method    string
 	URL       string
 	Headers   map[string][]string
-	Body      []byte
+	Body      string
 	Timestamp time.Time
 }
 
 type Response struct {
 	StatusCode int
 	Headers    map[string][]string
-	Body       []byte
+	Body       string
 	Duration   time.Duration
 }
 

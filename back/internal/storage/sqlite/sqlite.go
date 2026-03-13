@@ -176,13 +176,13 @@ where id = ?
 		Method:    method,
 		URL:       u,
 		Headers:   reqHeaders,
-		Body:      reqBody,
+		Body:      string(reqBody),
 		Timestamp: started,
 	}
 	e.Response = storage.Response{
 		StatusCode: status,
 		Headers:    respHeaders,
-		Body:       respBody,
+		Body:       string(respBody),
 		Duration:   time.Duration(durMs) * time.Millisecond,
 	}
 	e.CreatedAt = created

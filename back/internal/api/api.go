@@ -25,7 +25,16 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/exchanges", s.handleListExchanges)
 	mux.HandleFunc("/exchanges/", s.handleExchange)
 	mux.HandleFunc("/events", s.handleEvents)
-	return mux
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		mux.ServeHTTP(w, r)
+	})
 }
 
 func (s *Server) handleListExchanges(w http.ResponseWriter, r *http.Request) {
@@ -139,7 +148,7 @@ func writeJSON(w http.ResponseWriter, v any) {
 	_ = json.NewEncoder(w).Encode(v)
 }
 
-func bytesReader(b []byte) *strings.Reader {
-	return strings.NewReader(string(b))
+func bytesReader(b string) *strings.Reader {
+	return strings.NewReader(b)
 }
 
