@@ -48,14 +48,7 @@ It captures every request/response, stores it in SQLite, and exposes a web UI to
    ```bash
    cd front
    npm install
-   VITE_MEO_API_URL=http://localhost:8081 npm run dev
+   npm run dev
    ```
 
    Open the URL printed by Vite (for example `http://localhost:5173`).
-
----
-
-## Project structure
-
-- `back/` – Go backend (proxy, storage, control API, SSE)
-- `front/` – React frontend (Vite + TypeScript)
