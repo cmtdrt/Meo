@@ -3,26 +3,26 @@ package storage
 import "time"
 
 type Request struct {
-	ID        string
-	Method    string
-	URL       string
-	Headers   map[string][]string
-	Body      string
-	Timestamp time.Time
+	ID        string              `json:"id"`
+	Method    string              `json:"method"`
+	URL       string              `json:"url"`
+	Headers   map[string][]string `json:"headers"`
+	Body      string              `json:"body"`
+	Timestamp time.Time           `json:"timestamp"`
 }
 
 type Response struct {
-	StatusCode int
-	Headers    map[string][]string
-	Body       string
-	Duration   time.Duration
+	StatusCode int                 `json:"statusCode"`
+	Headers    map[string][]string `json:"headers"`
+	Body       string              `json:"body"`
+	Duration   time.Duration       `json:"duration"`
 }
 
 type Exchange struct {
-	ID        string
-	Request   Request
-	Response  Response
-	CreatedAt time.Time
+	ID        string    `json:"id"`
+	Request   Request   `json:"request"`
+	Response  Response  `json:"response"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type Store interface {
