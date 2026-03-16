@@ -1,9 +1,44 @@
 # MEO
 
-MEO is a small developer tool that sits as a reverse proxy in front of your HTTP API.  
+MEO is a tool that sits as a reverse proxy in front of your HTTP API.  
 It captures every request/response, stores it in SQLite, and exposes a web UI to inspect and replay traffic.
 
----
+<table>
+<tr>
+<td width="50%">
+
+**Track incoming requests in real time**
+
+<img src="https://github.com/user-attachments/assets/52803c9f-f5be-4163-9cfc-25f2419fe12d" />
+
+</td>
+<td width="50%">
+
+**Inspect full request and response details**
+
+<img src="https://github.com/user-attachments/assets/12ac2b9d-085f-4a74-a1a9-887dcd0c7496" />
+
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
+**Replay requests and compare responses**
+
+<img src="https://github.com/user-attachments/assets/5db72866-986b-48df-8e35-eedf4a00e570" />
+
+</td>
+<td width="50%">
+
+**Filter by HTTP method, timestamp, and sort results**
+
+<img src="https://github.com/user-attachments/assets/6d569dcb-bab7-4483-a1b2-6fd055997ed0" />
+
+</td>
+</tr>
+</table>
 
 ## Features
 
