@@ -85,7 +85,7 @@ order by started_at desc
 	}
 	defer rows.Close()
 
-	var out []storage.Exchange
+	out := make([]storage.Exchange, 0)
 	for rows.Next() {
 		var (
 			id        string
